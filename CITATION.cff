@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+
+message: >-
+  If you use this software, its numerical results, or its figures,
+  please cite the archived repository as below.
+
+title: "Computational Companion for Volume Constants of Stepping-Stone Diversion Regions"
+type: software
+
+authors:
+  - family-names: "Espino-Montelongo"
+    given-names: "Heriberto"
+    affiliation: "Universidad de las Américas Puebla, Mexico"
+    orcid: "https://orcid.org/0009-0009-1230-2931"
+
+  - family-names: "Maravillo"
+    given-names: "Héctor"
+    affiliation: "Universidad Autónoma de la Ciudad de México, Mexico"
+    orcid: "https://orcid.org/0000-0002-6101-1964"
+
+version: "1.0.0"
+date-released: "2026-07-10"
+
+doi: "10.5281/zenodo.21291269"
+
+repository-code: "https://github.com/heri-espino/Stepping-Stone-Volume-Constants"
+url: "https://doi.org/10.5281/zenodo.21291269"
+
+license: "MIT"
+
+abstract: >-
+  Python tools for theoretical evaluation, Monte Carlo validation,
+  numerical analysis, and figure generation for normalized
+  stepping-stone diversion-region volume constants.
+
+keywords:
+  - computational geometry
+  - proximity graphs
+  - stepping-stone graph
+  - volume constants
+  - Monte Carlo
+  - reproducible research

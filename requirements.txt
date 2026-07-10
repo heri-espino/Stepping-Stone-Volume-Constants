@@ -1,0 +1,6 @@
+# Complete environment for calculations, tests, and publication figures.
+numpy>=1.23
+scipy>=1.9
+matplotlib>=3.6
+build>=1.0
+pytest>=7

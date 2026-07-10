@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stepping-stone-volume"
+version = "1.0.0"
+description = "Numerical evaluation, Monte Carlo validation, and figure generation for stepping-stone volume constants."
+readme = "README.md"
+requires-python = ">=3.10"
+
+license = "MIT"
+license-files = ["LICENSE"]
+
+authors = [
+    {name = "Heriberto Espino-Montelongo"},
+    {name = "Héctor Maravillo"},
+]
+
+maintainers = [
+    {name = "Heriberto Espino-Montelongo"},
+]
+
+keywords = [
+    "computational geometry",
+    "Monte Carlo",
+    "proximity graphs",
+    "reproducible research",
+    "stepping-stone graph",
+    "volume constants",
+]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+
+dependencies = [
+    "numpy>=1.23",
+    "scipy>=1.9",
+]
+
+[project.urls]
+Homepage = "https://github.com/heri-espino/Stepping-Stone-Volume-Constants"
+Repository = "https://github.com/heri-espino/Stepping-Stone-Volume-Constants"
+Issues = "https://github.com/heri-espino/Stepping-Stone-Volume-Constants/issues"
+"Archived release" = "https://doi.org/10.5281/zenodo.21291269"
+
+[project.optional-dependencies]
+figures = [
+    "matplotlib>=3.6",
+]
+
+dev = [
+    "build>=1.0",
+    "pytest>=7",
+]
+
+[project.scripts]
+stepping-stone-volume-check = "stepping_stone_volume.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["stepping_stone_volume*"]
+
+[tool.pytest.ini_options]
+addopts = "-q --strict-markers"
+testpaths = ["tests"]
