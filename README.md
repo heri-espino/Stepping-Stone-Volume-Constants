@@ -181,12 +181,12 @@ versions.
 Citation metadata is provided in `CITATION.cff` and is available through
 GitHub's **Cite this repository** interface.
 
-To cite the archived version used by this repository:
+To cite the current release:
 
 > Heriberto Espino-Montelongo and Héctor Maravillo.  
 > *Stepping-Stone Volume: Theory, Monte Carlo Validation, and Figures*.  
-> Version 1.0.0. Zenodo, 2026.  
-> DOI: [10.5281/zenodo.21291269](https://doi.org/10.5281/zenodo.21291269)
+> Version 1.1.0. GitHub, 2026.<br>
+> URL: [github.com/heri-espino/Stepping-Stone-Volume-Constants/releases/tag/v1.1.0](https://github.com/heri-espino/Stepping-Stone-Volume-Constants/releases/tag/v1.1.0)
 
 BibTeX:
 
@@ -196,12 +196,15 @@ BibTeX:
   title     = {Stepping-Stone Volume: Theory, Monte Carlo Validation,
                and Figures},
   year      = {2026},
-  version   = {1.0.0},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.21291269},
-  url       = {https://doi.org/10.5281/zenodo.21291269}
+  version   = {1.1.0},
+  publisher = {GitHub},
+  url       = {https://github.com/heri-espino/Stepping-Stone-Volume-Constants/releases/tag/v1.1.0}
 }
 ```
+
+The existing [Zenodo archive](https://doi.org/10.5281/zenodo.21291269)
+describes an earlier release. A new Zenodo version must be published before
+that DOI can be used as the citation for version 1.1.0.
 
 ## License
 

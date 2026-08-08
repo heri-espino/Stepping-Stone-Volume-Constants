@@ -2,7 +2,7 @@ cff-version: 1.2.0
 
 message: >-
   If you use this software, its numerical results, or its figures,
-  please cite the archived repository as below.
+  please cite this repository release as below.
 
 title: "Computational Companion for Volume Constants of Stepping-Stone Diversion Regions"
 type: software
@@ -18,13 +18,11 @@ authors:
     affiliation: "Universidad Autónoma de la Ciudad de México, Mexico"
     orcid: "https://orcid.org/0000-0002-6101-1964"
 
-version: "1.0.0"
-date-released: "2026-07-10"
-
-doi: "10.5281/zenodo.21291269"
+version: "1.1.0"
+date-released: "2026-08-08"
 
 repository-code: "https://github.com/heri-espino/Stepping-Stone-Volume-Constants"
-url: "https://doi.org/10.5281/zenodo.21291269"
+url: "https://github.com/heri-espino/Stepping-Stone-Volume-Constants/releases/tag/v1.1.0"
 
 license: "MIT"
 
