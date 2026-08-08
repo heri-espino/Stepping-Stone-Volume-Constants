@@ -1,0 +1,238 @@
+/* Publication-inspired styling for the interactive figure. */
+:root {
+  --Dash-Fill-Interactive-Strong: #498fff;
+  color: #172033;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f7fb;
+}
+
+.app-shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 36px;
+}
+
+.page-header {
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #172033;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+.page-header p {
+  margin: 7px 0 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.figure-card {
+  overflow: hidden;
+  border: 1px solid #e3e8f1;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 12px 36px rgba(35, 55, 90, 0.09);
+}
+
+.controls {
+  padding: 22px 28px 8px;
+}
+
+.control-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.control-heading label {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  font-style: italic;
+}
+
+.slider-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 84px;
+  align-items: start;
+  gap: 20px;
+}
+
+.range-wrap {
+  position: relative;
+  min-width: 0;
+  padding-bottom: 26px;
+}
+
+.alpha-slider {
+  width: 100%;
+  height: 18px;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.alpha-slider::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    #498fff 0%,
+    #498fff var(--slider-progress, 42.624%),
+    #e4e9f2 var(--slider-progress, 42.624%)
+  );
+}
+
+.alpha-slider::-moz-range-track {
+  height: 5px;
+  border-radius: 999px;
+  background: #e4e9f2;
+}
+
+.alpha-slider::-moz-range-progress {
+  height: 5px;
+  border-radius: 999px;
+  background: #498fff;
+}
+
+.alpha-slider::-webkit-slider-thumb {
+  width: 22px;
+  height: 22px;
+  margin-top: -8.5px;
+  appearance: none;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #498fff;
+  box-shadow: 0 0 0 2px #498fff, 0 3px 9px rgba(45, 78, 130, 0.25);
+}
+
+.alpha-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #498fff;
+  box-shadow: 0 0 0 2px #498fff, 0 3px 9px rgba(45, 78, 130, 0.25);
+}
+
+.alpha-slider:focus-visible {
+  outline: 2px solid rgba(73, 143, 255, 0.45);
+  outline-offset: 5px;
+  border-radius: 999px;
+}
+
+.slider-marks {
+  position: absolute;
+  top: 21px;
+  right: 0;
+  left: 0;
+  color: #344054;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.slider-marks span {
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.slider-marks span:first-child {
+  transform: none;
+}
+
+.slider-marks span:last-child {
+  transform: translateX(-100%);
+}
+
+.alpha-input {
+  width: 84px;
+  height: 40px;
+  margin-top: -7px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  color: #172033;
+  background: #fff;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.alpha-input:focus {
+  border-color: #498fff;
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(73, 143, 255, 0.16);
+}
+
+.region-graph {
+  height: clamp(500px, 68vh, 720px);
+}
+
+.rc-slider-track,
+.rc-slider-dot-active {
+  background-color: #498fff;
+  border-color: #498fff;
+}
+
+.rc-slider-handle {
+  border-color: #498fff;
+}
+
+.rc-slider-handle:active,
+.rc-slider-handle:hover {
+  border-color: #498fff;
+  box-shadow: 0 0 0 4px rgba(73, 143, 255, 0.2);
+}
+
+.rc-slider-tooltip {
+  display: none !important;
+}
+
+.dash-slider-tooltip {
+  display: none !important;
+}
+
+/* Dash 4 also renders an editable numeric field beside a slider.  It would
+   expose the slider's internal index rather than alpha, so keep it hidden. */
+.dash-range-slider-inputs {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    width: min(100% - 16px, 1120px);
+    padding-top: 16px;
+  }
+
+  .controls {
+    padding: 20px 18px 8px;
+  }
+
+  .slider-row {
+    grid-template-columns: minmax(0, 1fr) 70px;
+    gap: 12px;
+  }
+
+  .alpha-input {
+    width: 70px;
+  }
+
+  .region-graph {
+    height: 520px;
+  }
+}
