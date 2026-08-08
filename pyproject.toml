@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "stepping-stone-volume"
-version = "1.0.0"
+version = "1.1.0"
 description = "Numerical evaluation, Monte Carlo validation, and figure generation for stepping-stone volume constants."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -56,6 +56,11 @@ Issues = "https://github.com/heri-espino/Stepping-Stone-Volume-Constants/issues"
 [project.optional-dependencies]
 figures = [
     "matplotlib>=3.6",
+]
+
+interactive = [
+    "dash>=3.0",
+    "plotly>=6.0",
 ]
 
 dev = [
