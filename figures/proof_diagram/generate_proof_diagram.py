@@ -6,20 +6,17 @@ formula.  The normalized region is drawn in shifted coordinates x = X - 1/2,
 so the two sites are at (-1/2, 0) and (1/2, 0), and the symmetry line is x = 0.
 
 Main visual ideas:
-1. whole stepping-stone region shown with a light fill,
-2. right half x >= 0 shown with a darker fill,
-3. one representative slice at x = x_alpha(u),
-4. half-height y_alpha(u) indicated explicitly,
-5. symmetry about x = 0 explains the factor 2.
+1. the two symmetric halves shown with distinct translucent fills,
+2. the right half x >= 0 carrying the parametrization,
+3. the boundary point z_alpha(u) and its two defining distances,
+4. x_alpha(u) shown from the midpoint to the representative slice,
+5. the full transverse diameter 2 y_alpha(u).
 """
 
 from pathlib import Path
 
 from paper_figure_style import (
     SAVEFIG_KWARGS,
-    TEMPLATE_BOUNDARY_COLOR,
-    TEMPLATE_FILL_ALPHA,
-    TEMPLATE_FILL_COLOR,
     apply_paper_style,
 )
 import numpy as np
@@ -28,14 +25,33 @@ import matplotlib.pyplot as plt
 # ---------------------------------------------------------------------------
 # Visual style.
 # ---------------------------------------------------------------------------
-REGION_COLOR = TEMPLATE_FILL_COLOR
-RIGHT_HALF_COLOR = "#5A7EBA"
-BOUNDARY_COLOR = TEMPLATE_BOUNDARY_COLOR
-SLICE_COLOR = "#3C2F47"
-CONSTRUCTION_COLOR = "#6F494E"
-POINT_COLOR = "#000000"
-GUIDE_COLOR = "#8F8F8F"
-TEXT_COLOR = "#9A7C93"
+LA_LA_LAND_PALETTE = {
+    "HEX": [
+        "#030305",
+        "#141F1D",
+        "#242B4B",
+        "#1F4580",
+        "#9392C1",
+        "#D7A296",
+        "#8B5B6D",
+        "#B28919",
+        "#7C1914",
+        "#D6EAFA",
+    ]
+}
+
+REGION_COLOR = "#7081AE"
+RIGHT_HALF_COLOR = "#B3B2D3"
+BOUNDARY_COLOR = "#242B4B"
+SLICE_COLOR = "#B28919"
+Y_VECTOR_COLOR = "#AD8B0D"
+X_VECTOR_COLOR = "#7C1914"
+CONSTRUCTION_COLOR = "#8B5B6D"
+POINT_COLOR = "#030305"
+AXES_COLOR = "#000000"
+GUIDE_COLOR = "#D3D3D3"
+TEXT_COLOR = "#141F1D"
+REGION_FILL_ALPHA = 0.42
 
 
 # ---------------------------------------------------------------------------
@@ -52,11 +68,16 @@ GRID_RESOLUTION = 3600
 apply_paper_style()
 plt.rcParams.update({
     "font.size": 11,
+    "text.color": AXES_COLOR,
+    "axes.labelcolor": AXES_COLOR,
+    "axes.edgecolor": AXES_COLOR,
     "axes.spines.top": False,
     "axes.spines.right": False,
     "axes.linewidth": 0.75,
     "axes.unicode_minus": False,
+    "xtick.color": AXES_COLOR,
     "xtick.labelsize": 10,
+    "ytick.color": AXES_COLOR,
     "ytick.labelsize": 10,
 })
 
@@ -121,6 +142,32 @@ def annotate_text(ax, text, xy, ha="left", va="top", fontsize=10):
     )
 
 
+def label_distance(ax, start, end, text, normal_offset=0.045):
+    """Place a distance label parallel to and clear of its segment."""
+    dx = end[0] - start[0]
+    dy = end[1] - start[1]
+    angle = np.degrees(np.arctan2(dy, dx))
+    if angle > 90:
+        angle -= 180
+    elif angle < -90:
+        angle += 180
+    angle_radians = np.radians(angle)
+    center_x = 0.5 * (start[0] + end[0])
+    center_y = 0.5 * (start[1] + end[1])
+    ax.text(
+        center_x - normal_offset * np.sin(angle_radians),
+        center_y + normal_offset * np.cos(angle_radians),
+        text,
+        color=CONSTRUCTION_COLOR,
+        fontsize=8.5,
+        ha="center",
+        va="center",
+        rotation=angle,
+        rotation_mode="anchor",
+        zorder=7,
+    )
+
+
 def plot_stepping_stone_proof_figure(alpha=ALPHA, u=SLICE_U):
     """Create and save the midpoint-centered proof figure."""
     # Parameter range for the right-half parametrization.
@@ -136,12 +183,12 @@ def plot_stepping_stone_proof_figure(alpha=ALPHA, u=SLICE_U):
 
     # Region masks.
     mask = stepping_mask_midpoint(X, Y, alpha)
+    left_mask = mask & (X <= 0)
     right_mask = mask & (X >= 0)
 
     # Representative slice geometry.
     x0 = x_alpha(u, alpha)
     y0 = y_alpha(u, alpha)
-    rho0 = rho_alpha(u, alpha)
 
     # Key points.
     left_site = (-0.5, 0.0)
@@ -165,25 +212,24 @@ def plot_stepping_stone_proof_figure(alpha=ALPHA, u=SLICE_U):
     ax.axhline(0, color=GUIDE_COLOR, linewidth=0.65, zorder=0)
     ax.axvline(0, color=GUIDE_COLOR, linewidth=0.75, zorder=0)
 
-    # Fill the whole region lightly.
+    # Fill the two symmetric halves with distinct, equally weighted colors.
     ax.contourf(
         X,
         Y,
-        mask.astype(float),
+        left_mask.astype(float),
         levels=[0.5, 1.5],
         colors=[REGION_COLOR],
-        alpha=TEMPLATE_FILL_ALPHA,
+        alpha=REGION_FILL_ALPHA,
         zorder=1,
     )
 
-    # Overlay the right half more strongly.
     ax.contourf(
         X,
         Y,
         right_mask.astype(float),
         levels=[0.5, 1.5],
         colors=[RIGHT_HALF_COLOR],
-        alpha=0.45,
+        alpha=REGION_FILL_ALPHA,
         zorder=2,
     )
 
@@ -194,7 +240,7 @@ def plot_stepping_stone_proof_figure(alpha=ALPHA, u=SLICE_U):
         mask.astype(float),
         levels=[0.5],
         colors=[BOUNDARY_COLOR],
-        linewidths=1.65,
+        linewidths=1.9,
         zorder=3,
     )
 
@@ -211,47 +257,61 @@ def plot_stepping_stone_proof_figure(alpha=ALPHA, u=SLICE_U):
     ax.scatter(
         [left_site[0], midpoint[0], right_site[0]],
         [left_site[1], midpoint[1], right_site[1]],
-        s=[34, 20, 34],
+        s=[26, 15, 26],
         color=POINT_COLOR,
         zorder=5,
     )
 
-    # Labels for -1/2, 0, 1/2.
-    ax.text(-0.56, -0.070, r"$-\frac{1}{2}$", ha="center", va="top")
+    # Consolidated endpoint and midpoint labels.
+    ax.text(-0.54, -0.060, r"$p=\left(-\frac{1}{2},0\right)$", ha="center", va="top", fontsize=9.5)
     ax.text(0.0, -0.070, r"$\mathbf{0}$", ha="center", va="top")
-    ax.text(0.56, -0.070, r"$\frac{1}{2}$", ha="center", va="top")
+    ax.text(0.54, -0.060, r"$q=\left(\frac{1}{2},0\right)$", ha="center", va="top", fontsize=9.5)
 
-    # Optional site labels.
-    ax.text(-0.56, 0.055, r"$p$", ha="center", va="bottom", color=POINT_COLOR)
-    ax.text(0.56, 0.055, r"$q$", ha="center", va="bottom", color=POINT_COLOR)
-
-    # Slice at x = x_alpha(u).
-    ax.plot([x0, x0], [-y0, y0], color=SLICE_COLOR, linewidth=1.5, zorder=6)
-    ax.scatter([x0], [0], s=18, color=SLICE_COLOR, zorder=7)
-    ax.text(
-        x0 - 0, -0.070, r"$x_\alpha(u)$",
-        color=SLICE_COLOR, ha="right", va="top"
-    )
-
-    # Half-height y_alpha(u).
+    # The full transverse section has diameter 2 y_alpha(u).
     ax.annotate(
         "",
         xy=(x0, y0),
-        xytext=(x0, 0),
-        arrowprops=dict(arrowstyle="<->", color=SLICE_COLOR, linewidth=1.2),
+        xytext=(x0, -y0),
+        arrowprops=dict(
+            arrowstyle="<->",
+            color=Y_VECTOR_COLOR,
+            linewidth=1.5,
+            shrinkA=0,
+            shrinkB=0,
+        ),
         zorder=7,
     )
     ax.text(
-        x0 - 0.045, 0.5 * y0 - 0.055,
-        r"$y_\alpha(u)$",
-        color=SLICE_COLOR, ha="right", va="center"
+        x0 + 0.035,
+        -0.24,
+        r"$2y_\alpha(u)$",
+        color=SLICE_COLOR,
+        ha="left",
+        va="center",
     )
 
-    # Optional full slice length label (helpful in d=2 picture).
+    # The longitudinal coordinate runs from the midpoint to the slice.
+    ax.annotate(
+        "",
+        xy=(x0, 0),
+        xytext=midpoint,
+        arrowprops=dict(
+            arrowstyle="<->",
+            color=X_VECTOR_COLOR,
+            linewidth=1.3,
+            shrinkA=2,
+            shrinkB=2,
+        ),
+        zorder=8,
+    )
+    ax.scatter([x0], [0], s=14, color=X_VECTOR_COLOR, zorder=9)
     ax.text(
-        x0 + 0.09, -y0 - 0.045,
-        r"$2y_\alpha(u)$",
-        color=SLICE_COLOR, ha="center", va="top"
+        0.5 * x0,
+        -0.035,
+        r"$x_\alpha(u)$",
+        color=X_VECTOR_COLOR,
+        ha="center",
+        va="top",
     )
 
     # Dashed construction lines to a representative boundary point.
@@ -271,25 +331,30 @@ def plot_stepping_stone_proof_figure(alpha=ALPHA, u=SLICE_U):
         linestyle=(0, (4, 3)),
         zorder=5,
     )
-    ax.scatter([top_point[0]], [top_point[1]], s=24,
-               color=CONSTRUCTION_COLOR, zorder=7)
-
-    # Distance labels along the two dashed segments.
+    ax.scatter([top_point[0]], [top_point[1]], s=22,
+               color=X_VECTOR_COLOR, zorder=8)
     ax.text(
-        0.52 * left_site[0] + 0.48 * top_point[0],
-        0.52 * left_site[1] + 0.48 * top_point[1] + 0.03,
-        r"$u$",
-        color=CONSTRUCTION_COLOR,
+        top_point[0],
+        top_point[1] + 0.045,
+        r"$z_\alpha(u)$",
+        color=X_VECTOR_COLOR,
         ha="center",
         va="bottom",
+        zorder=9,
     )
-    ax.text(
-        x0 + 0.035,
-        0.5 * y0 - 0.055,
-        r"$\rho(u)$",
-        color=CONSTRUCTION_COLOR,
-        ha="left",
-        va="center",
+
+    # Distance labels along the two dashed segments.
+    label_distance(
+        ax,
+        left_site,
+        top_point,
+        r"$\left\|z_\alpha(u)-p\right\|=u$",
+    )
+    label_distance(
+        ax,
+        right_site,
+        top_point,
+        r"$\left\|z_\alpha(u)-q\right\|=\rho(u)$",
     )
 
     ax.tick_params(direction="out", length=2.5, width=0.7)

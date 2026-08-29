@@ -13,6 +13,9 @@ FIGURE_GENERATORS = (
     HERE
     / "three_dimensional_regions"
     / "generate_three_dimensional_regions.py",
+    HERE
+    / "combined_region_templates"
+    / "generate_combined_region_templates.py",
     HERE / "volume_curves" / "generate_volume_curves.py",
     HERE / "proof_diagram" / "generate_proof_diagram.py",
 )

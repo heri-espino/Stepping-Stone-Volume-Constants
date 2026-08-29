@@ -2,7 +2,8 @@
 
 const X_COUNT = 72;
 const THETA_COUNT = 64;
-const REGION_COLOR = "#498FFF";
+const DEFAULT_REGION_COLOR = "#498FFF";
+const DEFAULT_OPACITY = 0.58;
 const AXIS_COLOR = "#858585";
 const LABEL_COLOR = "#4F4F4F";
 const X_AXIS_RANGE = [-0.5, 2.0];
@@ -12,6 +13,25 @@ const TICK_SIZE = 0.035;
 const graph = document.getElementById("region-graph");
 const slider = document.getElementById("alpha-slider");
 const alphaInput = document.getElementById("alpha-input");
+const colorInput = document.getElementById("region-color");
+const colorValue = document.getElementById("color-value");
+const opacitySlider = document.getElementById("opacity-slider");
+const opacityInput = document.getElementById("opacity-input");
+
+function mixColor(hexColor, target, amount) {
+  const normalized = hexColor.replace("#", "");
+  const channels = [0, 2, 4].map((offset) => parseInt(normalized.slice(offset, offset + 2), 16));
+  const mixed = channels.map((channel) => Math.round(channel + (target - channel) * amount));
+  return `#${mixed.map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
+}
+
+function surfaceColorscale(color) {
+  return [
+    [0, mixColor(color, 0, 0.2)],
+    [0.5, color],
+    [1, mixColor(color, 255, 0.34)],
+  ];
+}
 
 function sequence(start, stop, count) {
   const step = (stop - start) / (count - 1);
@@ -151,7 +171,7 @@ function formatAlpha(alpha) {
   return Number(alpha.toPrecision(4)).toString();
 }
 
-function figureData(alpha) {
+function figureData(alpha, color = DEFAULT_REGION_COLOR, opacity = DEFAULT_OPACITY) {
   const mesh = regionMesh(alpha);
   return [
     {
@@ -162,12 +182,8 @@ function figureData(alpha) {
       surfacecolor: mesh.z,
       cmin: -1,
       cmax: 1,
-      colorscale: [
-        [0, "#2E73DE"],
-        [0.5, REGION_COLOR],
-        [1, "#82B4FF"],
-      ],
-      opacity: 0.58,
+      colorscale: surfaceColorscale(color),
+      opacity,
       showscale: false,
       hoverinfo: "skip",
       lighting: { ambient: 1, diffuse: 0, specular: 0, roughness: 1, fresnel: 0 },
@@ -221,12 +237,33 @@ const plotConfig = {
 };
 
 function render(alpha) {
-  Plotly.react(graph, figureData(alpha), figureLayout(alpha), plotConfig);
+  Plotly.react(
+    graph,
+    figureData(alpha, colorInput.value, Number(opacityInput.value) / 100),
+    figureLayout(alpha),
+    plotConfig,
+  );
 }
 
 function updateSliderProgress() {
   const progress = (Number(slider.value) / 2) * 100;
   slider.style.setProperty("--slider-progress", `${progress}%`);
+}
+
+function updateOpacityProgress() {
+  opacitySlider.style.setProperty("--slider-progress", `${opacitySlider.value}%`);
+}
+
+function updateSurfaceAppearance() {
+  const opacity = Number(opacityInput.value) / 100;
+  Plotly.restyle(
+    graph,
+    {
+      colorscale: [surfaceColorscale(colorInput.value)],
+      opacity: [opacity],
+    },
+    [0],
+  );
 }
 
 let pendingFrame = null;
@@ -260,5 +297,30 @@ alphaInput.addEventListener("change", () => {
   scheduleRender(alpha);
 });
 
+colorInput.addEventListener("input", () => {
+  colorValue.value = colorInput.value.toUpperCase();
+  updateSurfaceAppearance();
+});
+
+opacitySlider.addEventListener("input", () => {
+  opacityInput.value = opacitySlider.value;
+  updateOpacityProgress();
+  updateSurfaceAppearance();
+});
+
+opacityInput.addEventListener("change", () => {
+  const opacity = Number(opacityInput.value);
+  if (!Number.isFinite(opacity) || opacity < 0 || opacity > 100) {
+    opacityInput.setCustomValidity("Enter an opacity from 0 to 100.");
+    opacityInput.reportValidity();
+    return;
+  }
+  opacityInput.setCustomValidity("");
+  opacitySlider.value = opacity;
+  updateOpacityProgress();
+  updateSurfaceAppearance();
+});
+
 updateSliderProgress();
+updateOpacityProgress();
 render(Number(alphaInput.value));

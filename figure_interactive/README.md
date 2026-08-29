@@ -16,6 +16,9 @@ python -m http.server --directory figure_interactive
 
 Open `http://127.0.0.1:8000`.
 
+Use the color picker to select any surface color and the opacity slider or
+percentage field to set transparency from 0% to 100%.
+
 ## Dash development version
 
 To run the Python/Dash version, install the project dependencies:
@@ -31,6 +34,7 @@ python figure_interactive/app.py
 ```
 
 Open `http://127.0.0.1:8050` in a browser. Move the **α** slider or enter a
-positive value in the numeric field to redraw the region. Drag the figure to
-rotate it and use the mouse wheel to zoom. The mesh is intentionally low
-resolution so updates remain fast.
+positive value in the numeric field to redraw the region. The color picker and
+opacity controls customize the surface. Drag the figure to rotate it and use
+the mouse wheel to zoom. The mesh is intentionally low resolution so updates
+remain fast.

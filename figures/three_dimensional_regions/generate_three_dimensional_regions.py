@@ -5,7 +5,7 @@ stepping-stone region
 
     K_SS,alpha = {z : ||z||^alpha + ||z-e_1||^alpha <= 1}
 
-and places alpha = 1.05, 7.12, and 48.28 side by side.
+and places alpha = 1.25, 2, and 10 side by side.
 
 Run from this folder with:
     conda run -n base python generate_three_dimensional_regions.py
@@ -27,16 +27,17 @@ if str(STYLE_DIR) not in sys.path:
     sys.path.insert(0, str(STYLE_DIR))
 
 from paper_figure_style import (  # noqa: E402
+    ALPHA_REGION_COLORS,
     SMALL_FONT_SIZE,
     TITLE_FONT_SIZE,
     apply_paper_style,
+    restore_color_intensity_hsv,
 )
 
 
 OUTPUT_STEM = "stepping_stone_three_dimensional_regions"
-ALPHAS = (1.05, 7.12, 48.28)
+ALPHAS = (1.25, 2.0, 10.0)
 
-REGION_COLOR = "#498FFF"
 POINT_COLOR = "#111111"
 AXIS_COLOR = "#858585"
 TICK_COLOR = "#747474"
@@ -48,9 +49,9 @@ TICK_ALPHA = 1
 DEFAULT_THETA_COUNT = 128
 DEFAULT_X_COUNT = 170
 MESH_COUNTS = {
-    1.05: (240, 180),
-    7.12: (440, 320),
-    48.28: (520, 360),
+    1.25: (240, 180),
+    2.0: (300, 220),
+    10.0: (440, 320),
 }
 THREE_D_FIGSIZE = (16.0, 5.10)
 THREE_D_LAYOUT = {
@@ -107,14 +108,15 @@ def surface_of_revolution(x_values, radius_values, theta_values):
     return X, Y, Z
 
 
-def plot_surface(ax, X, Y, Z):
+def plot_surface(ax, X, Y, Z, color):
     """Plot a translucent Stepping Stone surface."""
+    compensated_color = restore_color_intensity_hsv(color, SURFACE_ALPHA)
     ax.plot_surface(
         X,
         Y,
         Z,
-        color=REGION_COLOR,
-        alpha=SURFACE_ALPHA,
+        color=compensated_color[:3],
+        alpha=compensated_color[3],
         linewidth=0.0,
         antialiased=True,
         shade=True,
@@ -215,7 +217,11 @@ def draw_stepping_stone_panel(ax, alpha):
     theta = np.linspace(0.0, 2.0 * np.pi, theta_count)
     x = np.linspace(0.0, 1.0, x_count)
     radius = ss_radius_profile(x, alpha)
-    plot_surface(ax, *surface_of_revolution(x, radius, theta))
+    plot_surface(
+        ax,
+        *surface_of_revolution(x, radius, theta),
+        color=ALPHA_REGION_COLORS[alpha],
+    )
 
     ax.scatter([0, 1], [0, 0], [0, 0], s=30,
                color=POINT_COLOR, depthshade=False, zorder=4)

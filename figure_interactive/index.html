@@ -18,39 +18,79 @@
 
       <section class="figure-card">
         <div class="controls">
-          <div class="control-heading">
-            <label for="alpha-slider">α</label>
-          </div>
-          <div class="slider-row">
-            <div class="range-wrap">
+          <div class="alpha-control">
+            <div class="control-heading">
+              <label for="alpha-slider">α</label>
+            </div>
+            <div class="slider-row">
+              <div class="range-wrap">
+                <input
+                  id="alpha-slider"
+                  class="styled-slider alpha-slider"
+                  type="range"
+                  min="0"
+                  max="2"
+                  step="0.01"
+                  value="0.85248"
+                  aria-label="Alpha slider"
+                >
+                <div class="slider-marks" aria-hidden="true">
+                  <span style="left: 0%">1</span>
+                  <span style="left: 15.0515%">2</span>
+                  <span style="left: 34.9485%">5</span>
+                  <span style="left: 50%">10</span>
+                  <span style="left: 65.0515%">20</span>
+                  <span style="left: 84.9485%">50</span>
+                  <span style="left: 100%">100</span>
+                </div>
+              </div>
               <input
-                id="alpha-slider"
-                class="alpha-slider"
-                type="range"
-                min="0"
-                max="2"
-                step="0.01"
-                value="0.85248"
-                aria-label="Alpha slider"
+                id="alpha-input"
+                class="number-input alpha-input"
+                type="number"
+                step="any"
+                value="7.12"
+                aria-label="Alpha value"
               >
-              <div class="slider-marks" aria-hidden="true">
-                <span style="left: 0%">1</span>
-                <span style="left: 15.0515%">2</span>
-                <span style="left: 34.9485%">5</span>
-                <span style="left: 50%">10</span>
-                <span style="left: 65.0515%">20</span>
-                <span style="left: 84.9485%">50</span>
-                <span style="left: 100%">100</span>
+            </div>
+          </div>
+
+          <div class="appearance-controls">
+            <div class="appearance-control">
+              <label for="region-color">Color</label>
+              <div class="color-control">
+                <input id="region-color" type="color" value="#498fff" aria-label="Region color">
+                <output id="color-value" for="region-color">#498FFF</output>
               </div>
             </div>
-            <input
-              id="alpha-input"
-              class="alpha-input"
-              type="number"
-              step="any"
-              value="7.12"
-              aria-label="Alpha value"
-            >
+            <div class="appearance-control opacity-control">
+              <label for="opacity-slider">Opacity</label>
+              <div class="compact-slider-row">
+                <input
+                  id="opacity-slider"
+                  class="styled-slider"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  value="58"
+                  aria-label="Region opacity"
+                >
+                <div class="percent-input">
+                  <input
+                    id="opacity-input"
+                    class="number-input"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="1"
+                    value="58"
+                    aria-label="Region opacity percentage"
+                  >
+                  <span aria-hidden="true">%</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div id="region-graph" class="region-graph" role="img" aria-label="Interactive three-dimensional stepping-stone region"></div>

@@ -4,8 +4,11 @@ The figures are included in the manuscript after LaTeX scaling, so the
 internal point sizes are intentionally larger than the final displayed sizes.
 """
 
+import colorsys
+
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
+from matplotlib.colors import to_rgb
 
 
 _RASTER_PATCHED = False
@@ -34,6 +37,11 @@ TEMPLATE_FILL_COLOR = "#8AA6DA"
 TEMPLATE_BOUNDARY_COLOR = "#284FA3"
 CONSTRUCTION_BOUNDARY_COLOR = "#456DBA"
 TEMPLATE_FILL_ALPHA = 0.7
+ALPHA_REGION_COLORS = {
+    1.25: "#2F925C",
+    2.0: "#007684",
+    10.0: "#C03202",
+}
 DENSITY_ALPHA = 0.8
 DENSITY_PALETTE = [
     "#1565C0",
@@ -45,6 +53,32 @@ DENSITY_PALETTE = [
     "#AD1457",
     "#FFC107",
 ]
+
+
+def restore_color_intensity_hsv(color, alpha):
+    """Compensate a color for the desaturation caused by alpha blending.
+
+    Saturation is scaled by ``alpha**-1`` and value by ``alpha**-0.5``
+    before the original alpha is reapplied. The hue is preserved.
+    """
+    if not 0.0 <= alpha <= 1.0:
+        raise ValueError("alpha must be between 0 and 1")
+
+    red, green, blue = to_rgb(color)
+    if alpha == 0.0:
+        return (0.0, 0.0, 0.0, 0.0)
+    if alpha == 1.0:
+        return (red, green, blue, 1.0)
+
+    hue, saturation, value = colorsys.rgb_to_hsv(red, green, blue)
+    boosted_saturation = min(1.0, saturation / alpha)
+    boosted_value = min(1.0, value / (alpha ** 0.5))
+    boosted_rgb = colorsys.hsv_to_rgb(
+        hue,
+        boosted_saturation,
+        boosted_value,
+    )
+    return (*boosted_rgb, alpha)
 
 
 def apply_stix_fonts():

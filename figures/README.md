@@ -33,6 +33,7 @@ under `generated/`.
 | --- | --- |
 | `region_templates/generate_region_templates.py` | `stepping_stone_region_templates` |
 | `three_dimensional_regions/generate_three_dimensional_regions.py` | `stepping_stone_three_dimensional_regions` |
+| `combined_region_templates/generate_combined_region_templates.py` | `stepping_stone_region_templates_r2_r3` |
 | `volume_curves/generate_volume_curves.py` | `stepping_stone_volume_linear_scale`, `stepping_stone_volume_log_scale` |
 | `proof_diagram/generate_proof_diagram.py` | `stepping_stone_proof_midpoint` |
 

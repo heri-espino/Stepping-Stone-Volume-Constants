@@ -20,25 +20,24 @@ if str(STYLE_DIR) not in sys.path:
     sys.path.insert(0, str(STYLE_DIR))
 
 from paper_figure_style import (
+    ALPHA_REGION_COLORS,
     SAVEFIG_KWARGS,
-    TEMPLATE_BOUNDARY_COLOR,
     TEMPLATE_FILL_ALPHA,
-    TEMPLATE_FILL_COLOR,
     THREE_PANEL_FIGSIZE,
     THREE_PANEL_LAYOUT,
     apply_paper_style,
+    restore_color_intensity_hsv,
 )
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-REGION_COLOR = TEMPLATE_FILL_COLOR
-BOUNDARY_COLOR = TEMPLATE_BOUNDARY_COLOR
 POINT_COLOR = "#111111"
 GUIDE_COLOR = "#777777"
+RNG_COLOR = "#4F4F4F"
 
 OUTPUT_STEM = "stepping_stone_region_templates"
-ALPHAS = (1.05, 7.12, 23.64)
+ALPHAS = (1.25, 2.0, 10.0)
 XLIM = (-1, 2)
 YLIM = (-1, 1)
 GRID_RESOLUTION = 3000
@@ -59,6 +58,35 @@ def stepping_stone_mask(X, Y, alpha):
     return (X ** 2 + Y ** 2) ** (alpha / 2) + (
         (X - 1) ** 2 + Y ** 2
     ) ** (alpha / 2) <= 1
+
+
+def draw_rng_lune(ax):
+    """Draw the dotted relative-neighborhood lune in normalized coordinates."""
+    arc_samples = 500
+
+    # Unit-circle arc centered at 0 and lying inside the disk centered at e_1.
+    theta_right = np.linspace(-np.pi / 3, np.pi / 3, arc_samples)
+    ax.plot(
+        np.cos(theta_right),
+        np.sin(theta_right),
+        color=RNG_COLOR,
+        linewidth=1.2,
+        linestyle=(0, (1.2, 2.2)),
+        dash_capstyle="round",
+        zorder=3,
+    )
+
+    # Unit-circle arc centered at e_1 and lying inside the disk centered at 0.
+    theta_left = np.linspace(2 * np.pi / 3, 4 * np.pi / 3, arc_samples)
+    ax.plot(
+        1 + np.cos(theta_left),
+        np.sin(theta_left),
+        color=RNG_COLOR,
+        linewidth=1.2,
+        linestyle=(0, (1.2, 2.2)),
+        dash_capstyle="round",
+        zorder=3,
+    )
 
 
 def setup_axis(ax, alpha):
@@ -86,14 +114,19 @@ def setup_axis(ax, alpha):
 
 def draw_template(ax, X, Y, alpha):
     """Draw one filled stepping-stone template."""
+    region_color = ALPHA_REGION_COLORS[alpha]
+    compensated_color = restore_color_intensity_hsv(
+        region_color,
+        TEMPLATE_FILL_ALPHA,
+    )
     mask = stepping_stone_mask(X, Y, alpha)
     filled = ax.contourf(
         X,
         Y,
         mask.astype(float),
         levels=[0.5, 1.5],
-        colors=[REGION_COLOR],
-        alpha=TEMPLATE_FILL_ALPHA,
+        colors=[compensated_color[:3]],
+        alpha=compensated_color[3],
     )
     filled.set_rasterized(True)
     ax.contour(
@@ -101,9 +134,10 @@ def draw_template(ax, X, Y, alpha):
         Y,
         mask.astype(float),
         levels=[0.5],
-        colors=[BOUNDARY_COLOR],
+        colors=[region_color],
         linewidths=1.25,
     )
+    draw_rng_lune(ax)
 
 
 def generate_region_templates():
